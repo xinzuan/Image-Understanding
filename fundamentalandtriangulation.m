@@ -1,37 +1,37 @@
-// 1) Generate two synthetic images of 3D points using two virtual cameras.
-// The 3D object must not be planar, and two cameras must locate at different locations.
-//  image size (pixel)
+% 1) Generate two synthetic images of 3D points using two virtual cameras.
+% The 3D object must not be planar, and two cameras must locate at different locations.
+%  image size (pixel)
 width = 1024; height = 768;
-//  Calibration matrix
+%  Calibration matrix
 K1 = [300-3 0.02 width/2-5; 0 300+2 height/2+10; 0 0 1];
 K2 = [300+3 0.01 width/2+5; 0 300-2 height/2-10; 0 0 1];
-//  pixel
-//  pixel
-//  Rotation matrix
+%  pixel
+%  pixel
+%  Rotation matrix
 thx = -30*pi/180;
 thy = -170*pi/180;
-thz = -80*pi/180; //  radian
+thz = -80*pi/180; %  radian
 Rx = [1 0 0; 0 cos(thx) -sin(thx); 0 sin(thx) cos(thx)];
 Ry = [cos(thy) 0 sin(thy); 0 1 0; -sin(thy) 0 cos(thy)];
 Rz = [cos(thz) -sin(thz) 0; sin(thz) cos(thz) 0; 0 0 1];
 R1 = Rz*Ry*Rx;
 thx = 30*pi/180;
 thy = -180*pi/180;
-thz = -70*pi/180; //  radian
+thz = -70*pi/180; %  radian
 Rx = [1 0 0; 0 cos(thx) -sin(thx); 0 sin(thx) cos(thx)];
 Ry = [cos(thy) 0 sin(thy); 0 1 0; -sin(thy) 0 cos(thy)];
 Rz = [cos(thz) -sin(thz) 0; sin(thz) cos(thz) 0; 0 0 1];
 R2 = Rz*Ry*Rx;
-//  Camera center in world coordinate frame (meter)
+%  Camera center in world coordinate frame (meter)
 C1_ = [0; -3; 10];
 C2_ = [-1; 3; 9];
-//  Translation vector
+%  Translation vector
 t1 = -R1*C1_;
 t2 = -R2*C2_;
-//  Camera projection matrix (P = K*[R t])
+%  Camera projection matrix (P = K*[R t])
 P1 = K1*R1*[eye(3) -C1_];
 P2 = K2*R2*[eye(3) -C2_];
-//  3D points in world coordinate frame
+%  3D points in world coordinate frame
 r = -linspace(0,2) ;
 th = linspace(0,2*pi) ;
 [R,T] = meshgrid(r,th) ;
@@ -53,15 +53,15 @@ Z2 = Z(:);
 X = [X1;X2];
 Y = [Y1;Y2];
 Z = [Z1;Z2];
-//  Draw 3D points and world coordinate frame
+%  Draw 3D points and world coordinate frame
 figure; plot3(X1,Y1,Z1,'k.'); hold on;
-//  hold on;plot3(X2,Y2,Z2,'m.'); hold on;
+%  hold on;plot3(X2,Y2,Z2,'m.'); hold on;
 hold on; plot3(X(10001:20000),Y(10001:20000),Z(10001:20000),'c.'); hold on;
 xlabel('X (meter)');
 ylabel('Y (meter)');
 zlabel('Z (meter)');
 axis equal; grid on;
-//  Draw camera coordinate frame
+%  Draw camera coordinate frame
 len = 2;
 Xp = [len; 0; 0];
 Yp = [0; len; 0];
@@ -77,7 +77,7 @@ plot3([C2_(1) CX2(1)],[C2_(2) CX2(2)],[C2_(3) CX2(3)],'b:','LineWidth',2);
 plot3([C2_(1) CY2(1)],[C2_(2) CY2(2)],[C2_(3) CY2(3)],'g:','LineWidth',2);
 plot3([C2_(1) CZ2(1)],[C2_(2) CZ2(2)],[C2_(3) CZ2(3)],'r:','LineWidth',2);
 axis equal; hold off;
-//  Acquire images of 3D points
+%  Acquire images of 3D points
 x1 = P1*[X'; Y'; Z'; ones(1,length(X))];
 x1(1,:) = x1(1,:)./x1(3,:);
 x1(2,:) = x1(2,:)./x1(3,:);
@@ -86,7 +86,7 @@ x2 = P2*[X'; Y'; Z'; ones(1,length(X))];
 x2(1,:) = x2(1,:)./x2(3,:);
 x2(2,:) = x2(2,:)./x2(3,:);
 x2(3,:) = x2(3,:)./x2(3,:);
-//  Draw images of 3D points
+%  Draw images of 3D points
 figure;
 subplot(121); plot(x1(1,:),x1(2,:),'k.'); hold on;
 plot(x1(1,10001:20000),x1(2,10001:20000),'c.'); axis equal;
@@ -98,16 +98,15 @@ plot(x2(1,10001:20000),x2(2,10001:20000),'c.'); axis equal;
 axis([1 width 1 height]);
 xlabel('x (pixel)');
 hold off;
-save('data_twoviews.mat', ...
-'K1','R1','t1','K2','R2','t2','X','Y','Z','x1','x2','width','height');
+save('data_twoviews.mat','K1','R1','t1','K2','R2','t2','X','Y','Z','x1','x2','width','height');
 
-// 2) Add Gaussian noise to the 2D image points.
-// 3) Add some outliers to the noise-contaminated 2D points.
+% 2) Add Gaussian noise to the 2D image points.
+% 3) Add some outliers to the noise-contaminated 2D points.
 
 
-//  Load data
+%  Load data
 load('data_twoviews.mat');
-//  Add noise
+%  Add noise
 scale =2;
 x1o = x1(1:2,:);
 x2o = x2(1:2,:);
@@ -116,7 +115,7 @@ x1 = x1(1:2,:) + randn(size(x1(1:2,:)))*scale;
 x2 = x2(1:2,:) + randn(size(x2(1:2,:)))*scale;
 x1(3,:) = 1;
 x2(3,:) = 1;
-//  Outliers
+%  Outliers
 rng(1,'philox')
 outNum = 20;
 xo = (randn(3,outNum)+1.5)*400;
@@ -145,11 +144,11 @@ hold off;
 
 
 
-// 4) Estimate the fundamental matrix using RANSAC and check the result by drawing epipolar lines.
+% 4) Estimate the fundamental matrix using RANSAC and check the result by drawing epipolar lines.
 
-//  Load data
+%  Load data
 load('data_twoviews.mat');
-//  Add noise
+%  Add noise
 scale =0.0;
 x1o = x1(1:2,:);
 x2o = x2(1:2,:);
@@ -158,7 +157,7 @@ x1 = x1(1:2,:) + randn(size(x1(1:2,:)))*scale;
 x2 = x2(1:2,:) + randn(size(x2(1:2,:)))*scale;
 x1(3,:) = 1;
 x2(3,:) = 1;
-//  Outliers
+%  Outliers
 rng(1,'philox')
 outNum = 20;
 xo = (randn(3,outNum)+1.5)*400;
@@ -168,8 +167,8 @@ yo(3,:) = 0.0010;
 
 x1out = [x1 xo];
 y1out = [x2 yo];
-//  x1out = x1;
-//  y1out = x2;
+%  x1out = x1;
+%  y1out = x2;
 figure;
 subplot(121); plot(x1(1,:),x1(2,:),'r.'); hold on;
 plot(x1(1,10001:20000),x1(2,10001:20000),'m.'); axis equal;
@@ -187,14 +186,14 @@ plot(yo(1,:),yo(2,:),'g.');axis equal;
 axis([1 width 1 height]);
 xlabel('x (pixel)');
 hold off;
-//  Normalize data
+%  Normalize data
 iT1 = [width+height 0 width/2; 0 width+height height/2; 0 0 1];
 T1 = inv(iT1);
 T2=T1;
 x1nmo = T1*x1out;
 y2nmo = T2*y1out;
 N = 100;
-s = 8;  //  Minimum number of points
+s = 8;  %  Minimum number of points
 threshold = 0.3;
 [row, column] = size(x1nmo);
 numInliersEachIteration = zeros(N,1);
@@ -205,9 +204,9 @@ xb = [y1out ones(size(y1out,1),1)];
 F = zeros(3,3);
 for i = 1 : N
   
-   //  random subset of points
+   %  random subset of points
    subsetIndices = randsample(column, s);
-   //  normalize
+   %  normalize
    x_subset = T1* x1out(:,subsetIndices);
    y_subset = T2* y1out(:,subsetIndices);
       
@@ -216,7 +215,7 @@ for i = 1 : N
    Ftemp = T2'*Ftemp*T1;
    eval = diag(xb' * Ftemp * xa);
   
-   //  record the number of inliers
+   %  record the number of inliers
    numInlier= size( find(abs(eval) < threshold) , 1);
    if numInlier > maxInliner
   
@@ -226,8 +225,8 @@ for i = 1 : N
    end
 end
 
-//  Draw epipolar lines
-id = [10000 20000]; //  randomly select point and draw 4 epipole
+%  Draw epipolar lines
+id = [10000 20000]; %  randomly select point and draw 4 epipole
 for i=1:length(id)
     x = x1out(:,id(i));
     l_ = F*x;
@@ -250,21 +249,21 @@ save('fundamental.mat', 'F','x1out','y1out','x1','x2');
 
 
 
-// 5) Calculate a rotation matrix and a translation vector using two known calibration matrices.
+% 5) Calculate a rotation matrix and a translation vector using two known calibration matrices.
 
 
-//  Load data
+%  Load data
 load('data_twoviews.mat');
 x1wn = x1;
 x2wn = x2;
 load('fundamental.mat')
-//  Rotation and translation calculation
+%  Rotation and translation calculation
 E = K2'*F*K1;
 [U D V] = svd(E);
 W = [0 -1 0; 1 0 0; 0 0 1];
 Rc1 = U*W*V'; Rc2 = U*W'*V';
 tc1 = U(:,3); tc2 = -U(:,3);
-//  Triangulation for selecting R and t combination
+%  Triangulation for selecting R and t combination
 P1 = K1*[eye(3) zeros(3,1)];
 P2 = cell(1,4);
 t = cell(1,4);
@@ -286,7 +285,7 @@ for i=1:4
 end
 id = find(pointZ > 0 & sign(axisZ)==sign(pointZ));
 R = R{id}; t = t{id};
-//  Triangulation of all points
+%  Triangulation of all points
 P1 = K1*[eye(3) zeros(3,1)];
 P2 = K2*[R t];
 for i=1:length(x1)
@@ -305,8 +304,8 @@ xlabel('X'); ylabel('Y'); zlabel('Z'); axis equal; grid on;
 
 
 
-// 6) Reconstruct the 3D structure of the corresponding points with the known baseline
-//  Metric recovery
+% 6) Reconstruct the 3D structure of the corresponding points with the known baseline
+%  Metric recovery
 C1 = -R1*t1;
 C2 = -R2*t2;
 baseline = sqrt(sum((C1-C2).^2));

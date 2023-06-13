@@ -1,14 +1,14 @@
-//  Generating points on a circle
+%  Generating points on a circle
 th = linspace(0,2*pi,30)';
-r = 2.5;      //  radius of circle
-ox = 3.3;     //  center of circle in x-axis
-oy = 7.7;     //  center of circle in y-axis
-scale = 0.1; //  noise level
+r = 2.5;      %  radius of circle
+ox = 3.3;     %  center of circle in x-axis
+oy = 7.7;     %  center of circle in y-axis
+scale = 0.1; %  noise level
 x = r*cos(th) + ox + randn(size(th))*scale;
 y = r*sin(th) + oy + randn(size(th))*scale;
 figure; plot(x, y, 'r.'); axis equal;
 
-//  Estimate circle parameters using pseudoinverse.
+%  Estimate circle parameters using pseudoinverse.
 X = [x y ones(length(x),1)];
 Y = [(x.^2+y.^2)];
 p = inv(X'*X)*X'*Y;
@@ -20,7 +20,7 @@ plot(r2*cos(th)+x2,r2*sin(th)+y2,'g','linewidth',1); hold off;
 
 %hold off;
 
-//  Estimate circle parameters using SVD.
+%  Estimate circle parameters using SVD.
 
 X = [x y x.^2+y.^2 ones(length(x),1)];
 
@@ -34,9 +34,9 @@ figure;plot(x, y, 'r.');hold on;
 plot(r3*cos(th)+x3,r3*sin(th)+y3,'c','linewidth',1); hold off;
 axis equal;
 
-//  Add some outliers and estimate circle parameters using RANSAC.
+%  Add some outliers and estimate circle parameters using RANSAC.
 
-//  Outliers
+%  Outliers
 outNum = 20;
 xo = (rand(outNum,1)+0.5)*12;
 yo = (rand(outNum,1)+0.5)*16;
