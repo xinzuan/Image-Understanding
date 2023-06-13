@@ -1,2 +1,2 @@
 # Image-Understanding
-Implementation of some techniques in image understanding like RANSAC, HOmography Estimation, etc
+Implementation of some techniques in image understanding like RANSAC, Homography Estimation, etc
